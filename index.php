@@ -5,8 +5,10 @@
 </head>
 <body>
 <h1>IZ Ipsum</h1>
+<h2>Version 0.2</h2>
 <?php
 
+// Will need to work more on this (and add credit) - copied from https://en.wikipedia.org/wiki/Israel_Kamakawiwo%CA%BBole
 $IZ_IPSUM_TEXT = "Israel &quot;Iz&quot; Ka&#39;ano&#39;i Kamakawiwo&#39;ole (Hawaiian pronunciation: [kəˌmɐkəˌvivoˈʔole]) translation: &quot;The Fearless Eyed&quot;; May 20, 1959 – June 26, 1997), also called Bruddah Iz (Brother Iz), was a Native Hawaiian musician, entertainer and Hawaiian sovereignty activist.
 
 His voice became famous outside Hawaii when his album Facing Future was released in 1993. His medley of &quot;Somewhere Over the Rainbow/What a Wonderful World&quot; was subsequently featured in several films, television programs, and television commercials.
@@ -35,34 +37,55 @@ Kamakawiwo&#39;ole was known for promoting Hawaiian rights and Hawaiian independ
 
 Kamakawiwo&#39;ole used the soprano ukulele, and his music as a whole, to promote awareness of his belief of a second-class status pushed onto the natives by the tourist industry.[11]";
 
+
+
+
+
+
+$ipsum_to_display = '';
+
+// Options for displaying IZ Ipsum
 $sentences_per_paragraph = 5;
-$end_of_sentence_delimeter = ". ";
-
-$newposit = 0;
-$last_delimeter_found_position = 0;
-$paragraph_start_position = 0;
-$first_delimiter_position = stripos ($IZ_IPSUM_TEXT, $end_of_sentence_delimeter);
-
-// If a delimiter is found in the text
-if($first_delimiter_position) {
+$paragraphs_to_display = 5;
+$end_of_sentence_delimeter = '. ';
 
 
-    for ( $j= 0; $j < 3; $j++) {
-    $paragraph_text = "";
-    
-      for ($i = 0; $i < $sentences_per_paragraph; $i++ ) {
-        $last_delimeter_found_position = (stripos ($IZ_IPSUM_TEXT, $end_of_sentence_delimeter, $last_delimeter_found_position)) + 1;
-      }
-      $paragraph_text = substr($IZ_IPSUM_TEXT, $paragraph_start_position, $last_delimeter_found_position);
-      echo $paragraph_text . "<br><br>$paragraph_start_position $last_delimeter_found_position";
+$current_sentence = 0;
+$sentence_count = 0;
+$paragraph_count = 0;
 
+// Break the text into sentences, based on period (.)
+$sentences = explode($end_of_sentence_delimeter, $IZ_IPSUM_TEXT);
+
+// For each paragraph, get the sentences to display
+// Paragraph and sentence numbers are in there for testing and will be removed
+for ( $i = 0; $i < $paragraphs_to_display; $i++ ) {
+
+    $ipsum_to_display .= '<br><br>';
+    $ipsum_to_display .= "<br>[Paragraph $i ]";
+
+    for ( $j = 0; $j < $sentences_per_paragraph; $j++ ) {
+
+        /**
+         * Make sure there are sentences left before the end of the
+         * array.  If there are, add it to the text to display
+         */
+        if ($current_sentence < count($sentences)) {
+            $ipsum_to_display .= "<br>[Sentence " . $j . "] " . $sentences[$current_sentence] . ".";
+            $current_sentence++;
+        }
+        // If no sentences remain in array, start over from the beginning
+        else {
+            $current_sentence = 0;
+            $ipsum_to_display .= "<br>[Sentence " . $j . "] " . $sentences[$current_sentence] . ".";
+            $current_sentence++;
+        }
     }
-}
-
-// If no delimiter is found in the text
-else {
+    $paragraph_count++;
 
 }
+echo $ipsum_to_display;
+
 
 ?>
 
