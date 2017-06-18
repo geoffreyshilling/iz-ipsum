@@ -2,10 +2,50 @@
 <!DOCTYPE HTML>
 <html>
 <head>
+    <style>
+        .error {
+            color: red;
+        }
+    </style>
 </head>
 <body>
 <h1>IZ Ipsum</h1>
 <h2>Version 0.2</h2>
+
+<?php
+$paragraphs_to_display = 5;
+$paragraphs_to_display_err = "";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  if (empty($_POST["paragraphs_to_display"])) {
+    $paragraphs_to_display_err = "Number is required";
+  } else {
+    $paragraphs_to_display = test_input($_POST["paragraphs_to_display"]);
+    // check if paragraphs_to_display only contains numbers
+    if ( ! is_numeric ($paragraphs_to_display) ) {
+      $paragraphs_to_display_err = "Only numbers allowed";
+    }
+  }
+  }
+
+  function test_input($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+  }
+?>
+
+
+<p><span class="error">* required fields</span></p>
+<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+  Number of Paragraphs to Display: <input type="text" name="paragraphs_to_display" value="<?php echo $paragraphs_to_display;?>">
+  <span class="error">* <?php echo $paragraphs_to_display_err;?></span>
+  <br><br>
+  <input type="submit" name="submit" value="Submit">
+</form>
+
+<hr>
 <?php
 
 // Will need to work more on this (and add credit) - copied from https://en.wikipedia.org/wiki/Israel_Kamakawiwo%CA%BBole
@@ -46,7 +86,7 @@ $ipsum_to_display = '';
 
 // Options for displaying IZ Ipsum
 $sentences_per_paragraph = 5;
-$paragraphs_to_display = 5;
+
 $end_of_sentence_delimeter = '. ';
 
 
