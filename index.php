@@ -10,7 +10,7 @@
 </head>
 <body>
 <h1>IZ Ipsum</h1>
-<h2>Version 0.2.0</h2>
+<h2>Version 0.3.0</h2>
 
 <?php
 $number_to_display = 5;
@@ -74,9 +74,10 @@ function generate_paragraphs($numer_of_paragraphs, $ipsum_text) {
     // For each paragraph, get the sentences to display
     // Paragraph and sentence numbers are in there for type_to_displaying and will be removed
     for ( $i = 0; $i < $numer_of_paragraphs; $i++ ) {
-
-        $ipsum_text .= '<br><br>';
-        $ipsum_text .= "<br>[Paragraph $i ]";
+        if($i > 0) {
+            $ipsum_text .= '<br><br>';
+        }
+        //$ipsum_text .= "<br>[Paragraph $i ]";
 
         for ( $j = 0; $j < $sentences_per_paragraph; $j++ ) {
 
@@ -85,13 +86,13 @@ function generate_paragraphs($numer_of_paragraphs, $ipsum_text) {
              * array.  If there are, add it to the text to display
              */
             if ($current_sentence < count($sentences)) {
-                $ipsum_text .= "<br>[Sentence " . $j . "] " . $sentences[$current_sentence] . ".";
+                $ipsum_text .= $sentences[$current_sentence] . ". ";
                 $current_sentence++;
             }
             // If no sentences remain in array, start over from the beginning
             else {
                 $current_sentence = 0;
-                $ipsum_text .= "<br>[Sentence " . $j . "] " . $sentences[$current_sentence] . ".";
+                $ipsum_text .= $sentences[$current_sentence] . ". ";
                 $current_sentence++;
             }
         }
@@ -103,11 +104,56 @@ function generate_paragraphs($numer_of_paragraphs, $ipsum_text) {
 
 
 function generate_words($numer_of_words, $ipsum_text) {
+    $ipsum_text = str_replace(array('.', ','), '' , $ipsum_text);
     $end_of_word_delimeter = ' ';
     $words = explode($end_of_word_delimeter, $ipsum_text);
     for ($k = 0; $k < $numer_of_words; $k++) {
         echo "$words[$k] ";
     }
+}
+
+function generate_lists($numer_of_lists, $ipsum_text) {
+
+    $end_of_sentence_delimeter = '. ';
+
+    $current_sentence = 0;
+    $sentence_count = 0;
+    $list_count = 0;
+
+    // Break the text into sentences, based on period (.)
+    $sentences = explode($end_of_sentence_delimeter, $ipsum_text);
+    $ipsum_text = "";
+    $sentences_per_paragraph = 5;
+
+    // For each paragraph, get the sentences to display
+    // Paragraph and sentence numbers are in there for type_to_displaying and will be removed
+    for ( $i = 0; $i < $numer_of_lists; $i++ ) {
+            $ipsum_text .= '<ul>';
+
+            $sentences_per_paragraph = rand(3, 7);
+        for ( $j = 0; $j < $sentences_per_paragraph; $j++ ) {
+
+            /**
+             * Make sure there are sentences left before the end of the
+             * array.  If there are, add it to the text to display
+             */
+            if ($current_sentence < count($sentences)) {
+                $ipsum_text .= "<li>$sentences[$current_sentence].</li>";
+                $current_sentence++;
+            }
+            // If no sentences remain in array, start over from the beginning
+            else {
+                $current_sentence = 0;
+                $ipsum_text .= $sentences[$current_sentence] . ". ";
+                $current_sentence++;
+            }
+        }
+
+        $ipsum_text .= '</ul>';
+        $list_count++;
+
+    }
+    return $ipsum_text;
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -127,7 +173,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($type_to_display) && $type_to_display=="paragraphs") {
         //echo generate_paragraphs ($number_to_display, $IZ_IPSUM_TEXT);
     }
-    if (isset($type_to_display) && $type_to_display=="words") {
+    elseif (isset($type_to_display) && $type_to_display=="words") {
+        //echo generate_words ($number_to_display, $IZ_IPSUM_TEXT);
+    }
+    elseif (isset($type_to_display) && $type_to_display=="lists") {
         //echo generate_words ($number_to_display, $IZ_IPSUM_TEXT);
     }
   }
@@ -156,7 +205,10 @@ value="paragraphs" checked>Paragraphs
 <br><input type="radio" name="type_to_display"
 <?php if (isset($type_to_display) && $type_to_display=="words") echo "checked ";?>
 value="words">Words
-  <input type="submit" name="submit" value="Submit">
+<br><input type="radio" name="type_to_display"
+<?php if (isset($type_to_display) && $type_to_display=="lists") echo "checked ";?>
+value="lists">Lists
+  <br><input type="submit" name="submit" value="Generate IZ Ipsum">
 </form>
 
 <hr>
@@ -164,13 +216,15 @@ value="words">Words
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-  if (isset($type_to_display) && $type_to_display=="paragraphs") {
-        echo generate_paragraphs ($number_to_display, $IZ_IPSUM_TEXT);
+    if (isset($type_to_display) && $type_to_display=="paragraphs") {
+          echo generate_paragraphs ($number_to_display, $IZ_IPSUM_TEXT);
     }
-    if (isset($type_to_display) && $type_to_display=="words") {
+    elseif (isset($type_to_display) && $type_to_display=="words") {
         echo generate_words ($number_to_display, $IZ_IPSUM_TEXT);
-
-  }
+    }
+    elseif (isset($type_to_display) && $type_to_display=="lists") {
+        echo generate_lists ($number_to_display, $IZ_IPSUM_TEXT);
+    }
 }
 
 
