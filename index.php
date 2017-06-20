@@ -15,7 +15,7 @@
 <?php
 $number_to_display = 5;
 $number_to_display_err = "";
-
+$display_type = "Paragraphs";
 $type_to_display = "";
 $type_to_displayErr = "";
 
@@ -180,6 +180,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         //echo generate_words ($number_to_display, $IZ_IPSUM_TEXT);
     }
   }
+  $display_type = sanitize_input($_POST["display_type"]);
+
 }
 
   function sanitize_input($data) {
@@ -196,19 +198,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
   Number of Items to Display: <input type="text" name="number_to_display" value="<?php echo $number_to_display;?>">
   <span class="error">* <?php echo $number_to_display_err;?></span>
-  <br><br>
-  Display:
+  <br>
+  Display: <select id="display_type" name="display_type">
+  <option value="Paragraphs"
+    <?php if (isset($display_type) && $display_type=="Paragraphs") echo "selected ";?>>Paragraphs</option>
+    <option value="Words"
+      <?php if (isset($display_type) && $display_type=="Words") echo "selected ";?>>Words</option>
+      <option value="Lists"
+        <?php if (isset($display_type) && $display_type=="Lists") echo "selected ";?>>Lists</option>
+</select>
   <span class="error">* <?php echo $type_to_displayErr;?></span>
-<br><input type="radio" name="type_to_display"
-<?php if (isset($type_to_display) && $type_to_display=="paragraphs") echo "checked ";?>
-value="paragraphs" checked>Paragraphs
-<br><input type="radio" name="type_to_display"
-<?php if (isset($type_to_display) && $type_to_display=="words") echo "checked ";?>
-value="words">Words
-<br><input type="radio" name="type_to_display"
-<?php if (isset($type_to_display) && $type_to_display=="lists") echo "checked ";?>
-value="lists">Lists
-  <br><input type="submit" name="submit" value="Generate IZ Ipsum">
+
+
+  <br><br><input type="submit" name="submit" value="Generate IZ Ipsum">
 </form>
 
 <hr>
@@ -216,13 +218,13 @@ value="lists">Lists
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    if (isset($type_to_display) && $type_to_display=="paragraphs") {
+    if (isset($display_type) && $display_type=="Paragraphs") {
           echo generate_paragraphs ($number_to_display, $IZ_IPSUM_TEXT);
     }
-    elseif (isset($type_to_display) && $type_to_display=="words") {
+    elseif (isset($display_type) && $display_type=="Words") {
         echo generate_words ($number_to_display, $IZ_IPSUM_TEXT);
     }
-    elseif (isset($type_to_display) && $type_to_display=="lists") {
+    elseif (isset($display_type) && $display_type=="Lists") {
         echo generate_lists ($number_to_display, $IZ_IPSUM_TEXT);
     }
 }
