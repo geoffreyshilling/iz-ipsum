@@ -10,43 +10,16 @@
 </head>
 <body>
 <h1>IZ Ipsum</h1>
-<h2>Version 0.2</h2>
+<h2>Version 0.2.0</h2>
 
 <?php
-$paragraphs_to_display = 5;
-$paragraphs_to_display_err = "";
+$number_to_display = 5;
+$number_to_display_err = "";
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  if (empty($_POST["paragraphs_to_display"])) {
-    $paragraphs_to_display_err = "Number is required";
-  } else {
-    $paragraphs_to_display = test_input($_POST["paragraphs_to_display"]);
-    // check if paragraphs_to_display only contains numbers
-    if ( ! is_numeric ($paragraphs_to_display) ) {
-      $paragraphs_to_display_err = "Only numbers allowed";
-    }
-  }
-  }
+$type_to_display = "";
+$type_to_displayErr = "";
 
-  function test_input($data) {
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
-  }
-?>
-
-
-<p><span class="error">* required fields</span></p>
-<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-  Number of Paragraphs to Display: <input type="text" name="paragraphs_to_display" value="<?php echo $paragraphs_to_display;?>">
-  <span class="error">* <?php echo $paragraphs_to_display_err;?></span>
-  <br><br>
-  <input type="submit" name="submit" value="Submit">
-</form>
-
-<hr>
-<?php
+$words_per_paragraph = 150;
 
 // Will need to work more on this (and add credit) - copied from https://en.wikipedia.org/wiki/Israel_Kamakawiwo%CA%BBole
 $IZ_IPSUM_TEXT = "Israel &quot;Iz&quot; Ka&#39;ano&#39;i Kamakawiwo&#39;ole (Hawaiian pronunciation: [kəˌmɐkəˌvivoˈʔole]) translation: &quot;The Fearless Eyed&quot;; May 20, 1959 – June 26, 1997), also called Bruddah Iz (Brother Iz), was a Native Hawaiian musician, entertainer and Hawaiian sovereignty activist.
@@ -82,52 +55,128 @@ Kamakawiwo&#39;ole used the soprano ukulele, and his music as a whole, to promot
 
 
 
-$ipsum_to_display = '';
-
-// Options for displaying IZ Ipsum
-$sentences_per_paragraph = 5;
-
-$end_of_sentence_delimeter = '. ';
 
 
-$current_sentence = 0;
-$sentence_count = 0;
-$paragraph_count = 0;
 
-// Break the text into sentences, based on period (.)
-$sentences = explode($end_of_sentence_delimeter, $IZ_IPSUM_TEXT);
+function generate_paragraphs($numer_of_paragraphs, $ipsum_text) {
 
-// For each paragraph, get the sentences to display
-// Paragraph and sentence numbers are in there for testing and will be removed
-for ( $i = 0; $i < $paragraphs_to_display; $i++ ) {
+    $end_of_sentence_delimeter = '. ';
 
-    $ipsum_to_display .= '<br><br>';
-    $ipsum_to_display .= "<br>[Paragraph $i ]";
+    $current_sentence = 0;
+    $sentence_count = 0;
+    $paragraph_count = 0;
 
-    for ( $j = 0; $j < $sentences_per_paragraph; $j++ ) {
+    // Break the text into sentences, based on period (.)
+    $sentences = explode($end_of_sentence_delimeter, $ipsum_text);
+    $ipsum_text = "";
+    $sentences_per_paragraph = 5;
 
-        /**
-         * Make sure there are sentences left before the end of the
-         * array.  If there are, add it to the text to display
-         */
-        if ($current_sentence < count($sentences)) {
-            $ipsum_to_display .= "<br>[Sentence " . $j . "] " . $sentences[$current_sentence] . ".";
-            $current_sentence++;
+    // For each paragraph, get the sentences to display
+    // Paragraph and sentence numbers are in there for type_to_displaying and will be removed
+    for ( $i = 0; $i < $numer_of_paragraphs; $i++ ) {
+
+        $ipsum_text .= '<br><br>';
+        $ipsum_text .= "<br>[Paragraph $i ]";
+
+        for ( $j = 0; $j < $sentences_per_paragraph; $j++ ) {
+
+            /**
+             * Make sure there are sentences left before the end of the
+             * array.  If there are, add it to the text to display
+             */
+            if ($current_sentence < count($sentences)) {
+                $ipsum_text .= "<br>[Sentence " . $j . "] " . $sentences[$current_sentence] . ".";
+                $current_sentence++;
+            }
+            // If no sentences remain in array, start over from the beginning
+            else {
+                $current_sentence = 0;
+                $ipsum_text .= "<br>[Sentence " . $j . "] " . $sentences[$current_sentence] . ".";
+                $current_sentence++;
+            }
         }
-        // If no sentences remain in array, start over from the beginning
-        else {
-            $current_sentence = 0;
-            $ipsum_to_display .= "<br>[Sentence " . $j . "] " . $sentences[$current_sentence] . ".";
-            $current_sentence++;
-        }
+        $paragraph_count++;
+
     }
-    $paragraph_count++;
-
+    return $ipsum_text;
 }
-echo $ipsum_to_display;
+
+
+function generate_words($numer_of_words, $ipsum_text) {
+    $end_of_word_delimeter = ' ';
+    $words = explode($end_of_word_delimeter, $ipsum_text);
+    for ($k = 0; $k < $numer_of_words; $k++) {
+        echo "$words[$k] ";
+    }
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  if (empty($_POST["number_to_display"])) {
+    $number_to_display_err = "Number is required";
+  } else {
+    $number_to_display = sanitize_input($_POST["number_to_display"]);
+    // check if number_to_display only contains numbers
+    if ( ! is_numeric ($number_to_display) ) {
+      $number_to_display_err = "Only numbers allowed";
+    }
+  }
+  if (empty($_POST["type_to_display"])) {
+    $type_to_displayErr = "Display is required";
+  } else {
+    $type_to_display = sanitize_input($_POST["type_to_display"]);
+    if (isset($type_to_display) && $type_to_display=="paragraphs") {
+        //echo generate_paragraphs ($number_to_display, $IZ_IPSUM_TEXT);
+    }
+    if (isset($type_to_display) && $type_to_display=="words") {
+        //echo generate_words ($number_to_display, $IZ_IPSUM_TEXT);
+    }
+  }
+}
+
+  function sanitize_input($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+  }
+
+?>
+
+
+<p><span class="error">* required fields</span></p>
+<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+  Number of Items to Display: <input type="text" name="number_to_display" value="<?php echo $number_to_display;?>">
+  <span class="error">* <?php echo $number_to_display_err;?></span>
+  <br><br>
+  Display:
+  <span class="error">* <?php echo $type_to_displayErr;?></span>
+<br><input type="radio" name="type_to_display"
+<?php if (isset($type_to_display) && $type_to_display=="paragraphs") echo "checked ";?>
+value="paragraphs" checked>Paragraphs
+<br><input type="radio" name="type_to_display"
+<?php if (isset($type_to_display) && $type_to_display=="words") echo "checked ";?>
+value="words">Words
+  <input type="submit" name="submit" value="Submit">
+</form>
+
+<hr>
+<?php
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+  if (isset($type_to_display) && $type_to_display=="paragraphs") {
+        echo generate_paragraphs ($number_to_display, $IZ_IPSUM_TEXT);
+    }
+    if (isset($type_to_display) && $type_to_display=="words") {
+        echo generate_words ($number_to_display, $IZ_IPSUM_TEXT);
+
+  }
+}
 
 
 ?>
+
+
 
 </body>
 </html>
