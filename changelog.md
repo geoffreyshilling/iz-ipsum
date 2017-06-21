@@ -15,5 +15,16 @@
 ### Major Enhancements:
 * Completely rebuild IZ Ipsum, switch to _explode_ function instead of trying to do the work of finding each sentence manually.
 * Basic form that allows user to choose how many paragraphs of IZ Ipsum text to display.
+
 ### Minor Enhancements:
-* Start each paragraph at the next sentence instead of always from the beginning
+* Start each paragraph at the next sentence instead of always from the beginning.
+
+## 0.3:
+
+* Release date:  June 21, 2017
+
+### Major Enhancements:
+* Rebuilt the page and the included form using Bootstrap.
+
+### Minor Enhancements:
+* Added the option to select how the ipsum should be displayed, including paragraphs, words, and lists.

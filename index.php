@@ -2,15 +2,17 @@
 <!DOCTYPE HTML>
 <html>
 <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <style>
         .error {
             color: red;
         }
+        .fineprint {
+            font-size: .9em;
+        }
     </style>
 </head>
 <body>
-<h1>IZ Ipsum</h1>
-<h2>Version 0.3.0</h2>
 
 <?php
 $number_to_display = 5;
@@ -157,13 +159,15 @@ function generate_lists($numer_of_lists, $ipsum_text) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+$number_to_display_err = '';
+
   if (empty($_POST["number_to_display"])) {
-    $number_to_display_err = "Number is required";
+    $number_to_display_err .= 'A number is required.';
   } else {
     $number_to_display = sanitize_input($_POST["number_to_display"]);
     // check if number_to_display only contains numbers
     if ( ! is_numeric ($number_to_display) ) {
-      $number_to_display_err = "Only numbers allowed";
+      $number_to_display_err .= "Must be a valid number.";
     }
   }
   if (empty($_POST["type_to_display"])) {
@@ -182,6 +186,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   }
   $display_type = sanitize_input($_POST["display_type"]);
 
+    if ($number_to_display_err != '') {
+              $number_to_display_err = '<div class="alert alert-danger">' . $number_to_display_err . '</div>';
+    }
 }
 
   function sanitize_input($data) {
@@ -194,29 +201,61 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ?>
 
 
-<p><span class="error">* required fields</span></p>
-<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-  Number of Items to Display: <input type="text" name="number_to_display" value="<?php echo $number_to_display;?>">
-  <span class="error">* <?php echo $number_to_display_err;?></span>
-  <br>
-  Display: <select id="display_type" name="display_type">
-  <option value="Paragraphs"
-    <?php if (isset($display_type) && $display_type=="Paragraphs") echo "selected ";?>>Paragraphs</option>
-    <option value="Words"
-      <?php if (isset($display_type) && $display_type=="Words") echo "selected ";?>>Words</option>
-      <option value="Lists"
-        <?php if (isset($display_type) && $display_type=="Lists") echo "selected ";?>>Lists</option>
-</select>
-  <span class="error">* <?php echo $type_to_displayErr;?></span>
+
+<div class="container">
+  <div class="row">
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-8 text-center"><h2>IZ Ipsum</h2>
+            Version 0.3.0 | Released June 21, 2017 | Geoffrey Shilling
+        </div>
+    </div>
+    <div class="col-md-4 ipsum-generator">
+		<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+		  <div class="form-group">
+			<label for="number_to_display">Number of Items to Display:</label> <span class="error">*</span>
+             <?php echo $number_to_display_err; ?>
+			<input type="text" name="number_to_display" value="<?php echo $number_to_display;?>" class="form-control">
+		  </div>
+          <div class="form-group">
+ <label for="display_type">display_type:</label>
+ <select class="form-control" id="display_type" name="display_type">
+     <option value="Paragraphs"
+       <?php if (isset($display_type) && $display_type=="Paragraphs") echo "selected ";?>>Paragraphs</option>
+   <option value="Words"
+     <?php if (isset($display_type) && $display_type=="Words") echo "selected ";?>>Words</option>
+     <option value="Lists"
+       <?php if (isset($display_type) && $display_type=="Lists") echo "selected ";?>>Lists</option>
+ </select>
+</div>
+
+<small><span class="error">* Required</span></small>
+		  <br><button type="submit" class="btn btn-block btn-primary">Generate IZ Ipsum</button>
+		</form>
+	</div>
+    <div class="col-md-8">
+<br>Israel "Iz" Kamakawiwo'ole is my favorite singer of all time.  More to come...
+
+<div class="fineprint"><br>Mahalo to Wikipedia contributors. "<a href="https://en.wikipedia.org/wiki/Israel_Kamakawiwo%CA%BBole" title="Learn About Israel Kamakawiwoʻole"><cite>Israel Kamakawiwoʻole</cite></a>." Wikipedia, The Free Encyclopedia. Wikipedia, The Free Encyclopedia, 21 Jun. 2017. Web.
+21 Jun. 2017</div></div>
+  </div>
+</div>
 
 
-  <br><br><input type="submit" name="submit" value="Generate IZ Ipsum">
-</form>
+
+
 
 <hr>
 <?php
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+?>
+    <div class="container">
+      <div class="row">
+        <div class="row">
+            <div class="col-xs-1 col-lg-0"></div>
+            <div class="col-xs-10 col-lg-12">
+    <?php
 
     if (isset($display_type) && $display_type=="Paragraphs") {
           echo generate_paragraphs ($number_to_display, $IZ_IPSUM_TEXT);
@@ -227,6 +266,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     elseif (isset($display_type) && $display_type=="Lists") {
         echo generate_lists ($number_to_display, $IZ_IPSUM_TEXT);
     }
+?>
+    </div>
+        <div class="col-xs-1 col-lg-0"></div>
+        </div></div>
+        <?php
 }
 
 
