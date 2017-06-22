@@ -21,10 +21,13 @@
 
 ## 0.3:
 
-* Release date:  June 21, 2017
+* Release date:  June 22, 2017
 
 ### Major Enhancements:
-* Rebuilt the page and the included form using Bootstrap.
+* IZ Ipsum is ready for use.  
+* Rebuilt the page and the form using Bootstrap.
 
 ### Minor Enhancements:
 * Added the option to select how the ipsum should be displayed, including paragraphs, words, and lists.
+* Formatted the code, made sure things worked fine when Bootstrap wasn't used.
+* Added some basic information about IZ Ipsum generator and Israel Kamakawiwo'ole's video for Somewhere Over the Rainbow/What a Wonderful World medley.
